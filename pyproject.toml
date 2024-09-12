@@ -1,0 +1,77 @@
+[build-system]
+requires      = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["./src"]  # list of folders that contain the packages (["."] by default)
+include = ["*"]  # package names should match these glob patterns (["*"] by default)
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
+
+[project]
+name = "spark-connect-proxy"
+version = "0.0.1"
+description = "A reverse proxy server which allows secure connectivity to a Spark Connect server"
+readme = "README.md"
+authors = [{ name = "Philip Moore", email = "prmoore77@hotmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["spark", "pyspark", "grpc", "reverse-proxy", "connect", "spark-connect"]
+dependencies = [
+    "click==8.1.*",
+    "pyspark==3.5.1",
+    "grpcio-tools==1.66.*",
+    "grpcio-channelz==1.66.*",
+    "grpcio-status==1.66.*",
+    "pyjwt==2.9.*",
+    "python-dotenv==1.0.*",
+    "pyarrow_hotfix==0.6.*"
+]
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = [
+    "bumpver",
+    "pip-tools",
+    "pytest"
+]
+
+client = [
+    "ibis-framework==9.5.*",
+    "codetiming==1.4.*",
+    "pandas==2.2.*",
+    "pyarrow==17.0.*",
+    "pyOpenSSL==24.2.1"
+]
+
+[project.urls]
+Homepage = "https://github.com/prmoore77/spark-connect-proxy"
+
+[project.scripts]
+spark-connect-proxy-serve = "spark_connect_proxy.server:click_serve"
+spark-connect-proxy-create-jwt = "spark_connect_proxy.utilities.create_jwt:click_create_jwt"
+spark-connect-proxy-create-tls-keypair = "spark_connect_proxy.utilities.tls_utilities:click_create_tls_keypair"
+
+[tool.bumpver]
+current_version = "0.0.1"
+version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    '^version = "{version}"$',
+    '^current_version = "{version}"$',
+]
+"src/spark_connect_proxy/__init__.py" = [
+    '^__version__ = "{version}"$',
+]
