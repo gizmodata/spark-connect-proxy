@@ -47,6 +47,10 @@ spark-connect-proxy-create-tls-keypair \
 # Create a random secret key
 SECRET_KEY=$(openssl rand -base64 32)
 
+# Generate a JWT token for authentication with the Spark Connect Proxy server
+spark-connect-proxy-create-jwt \
+   --secret-key ${SECRET_KEY}
+
 # Start the Spark Connect Proxy server - listen on port: 50051
 # It is safe to expose this port to the internet
 # because it uses TLS and JWT authentication.
@@ -58,10 +62,6 @@ spark-connect-proxy-server \
    --jwt-audience "spark-connect-proxy" \
    --secret-key "${SECRET_KEY}" \
    --log-level INFO
-
-# Generate a JWT token for authentication with the Spark Connect Proxy server
-spark-connect-proxy-create-jwt \
-   --secret-key ${SECRET_KEY}
 
 echo "All steps completed successfully."
 

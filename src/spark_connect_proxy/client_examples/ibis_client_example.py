@@ -1,27 +1,18 @@
-import logging
 import os
-import sys
+from typing import Optional
 
 import click
 import ibis
 import pandas as pd
+from codetiming import Timer
 from ibis import _
 from pyspark.sql import SparkSession
-from codetiming import Timer
-from typing import List, Optional
+
 from ..config import SERVER_PORT
+from ..logger import logger
 
 # Constants
 TIMER_TEXT = "{name}: Elapsed time: {:.4f} seconds"
-
-# Setup logging
-logging.basicConfig(format='%(asctime)s - %(levelname)-8s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S %Z',
-                    level=getattr(logging, os.getenv("LOG_LEVEL", "INFO").upper()),
-                    stream=sys.stdout
-                    )
-
-logger = logging.getLogger()
 
 # Setup pandas
 pd.set_option("display.width", 0)
@@ -37,7 +28,7 @@ def run_client_example(host: str,
                        token: Optional[str] = None
                        ):
     spark_connect_server_url = f"sc://{host}:{port}/"
-    logging.info(msg=f"Using Spark Connect Server URL: {spark_connect_server_url}")
+    logger.info(msg=f"Using Spark Connect Server URL: {spark_connect_server_url}")
 
     if use_tls:
         spark_connect_server_url += ";use_ssl=true"

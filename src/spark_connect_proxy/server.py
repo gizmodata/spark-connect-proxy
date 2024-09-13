@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from concurrent import futures
 from pathlib import Path
 from typing import List, Optional
@@ -12,19 +11,11 @@ from grpc_channelz.v1 import channelz
 
 from . import __version__ as spark_connect_proxy_version
 from .config import SPARK_CONNECT_SERVER_DEFAULT_URL, SERVER_PORT, DEFAULT_JWT_AUDIENCE
+from .logger import logger
 from .security import BearerTokenAuthInterceptor
 
 # Misc. Constants
 SPARK_CONNECT_PROXY_VERSION = spark_connect_proxy_version
-
-# Setup logging
-logging.basicConfig(format='%(asctime)s - %(levelname)-8s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S %Z',
-                    level=getattr(logging, os.getenv("LOG_LEVEL", "INFO").upper()),
-                    stream=sys.stdout
-                    )
-
-logger = logging.getLogger()
 
 
 class LoggingInterceptor(grpc.ServerInterceptor):

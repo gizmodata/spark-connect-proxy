@@ -1,21 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
 """Utilities for generating self-signed TLS certificates using pyOpenSSL."""
 
-import logging
-import socket
-from datetime import datetime, timedelta
-from pathlib import Path
 import os
+import socket
+from pathlib import Path
 
 import click
 from OpenSSL import crypto
 
 from ..config import DEFAULT_CERT_FILE, DEFAULT_KEY_FILE
+from ..logger import logger
 
-_LOGGER = logging.getLogger(__name__)
 
-
-def _gen_pyopenssl() -> tuple[bytes, bytes]:
+def _gen_pyopenssl(common_name: str) -> tuple[bytes, bytes]:
     """Generate a self-signed certificate using pyOpenSSL."""
 
     # Generate RSA private key
@@ -26,7 +23,7 @@ def _gen_pyopenssl() -> tuple[bytes, bytes]:
     cert = crypto.X509()
 
     # Set certificate subject and issuer to be the same (self-signed)
-    cert.get_subject().CN = socket.gethostname()
+    cert.get_subject().CN = common_name
     cert.set_issuer(cert.get_subject())
 
     # Set public key
@@ -41,11 +38,16 @@ def _gen_pyopenssl() -> tuple[bytes, bytes]:
 
     # Add subject alternative names
     san_list = [
-        f"DNS:{socket.gethostname()}",
-        f"DNS:*.{socket.gethostname()}",
+        f"DNS:{common_name}",
+        f"DNS:*.{common_name}",
         "DNS:localhost",
         "DNS:*.localhost"
     ]
+    hostname = socket.gethostname()
+    if hostname != common_name:
+        san_list.append(f"DNS:{hostname}")
+        san_list.append(f"DNS:*.{hostname}")
+
     san_extension = crypto.X509Extension(b"subjectAltName", False, ", ".join(san_list).encode())
     cert.add_extensions([
         san_extension,
@@ -62,15 +64,20 @@ def _gen_pyopenssl() -> tuple[bytes, bytes]:
     return cert_pem, private_key_pem
 
 
-def gen_self_signed_cert() -> tuple[bytes, bytes]:
+def gen_self_signed_cert(common_name: str) -> tuple[bytes, bytes]:
     """Return (cert, key) as ASCII PEM strings using pyOpenSSL."""
-    return _gen_pyopenssl()
+    return _gen_pyopenssl(common_name=common_name)
 
 
 def create_tls_keypair(
-        cert_file: str = DEFAULT_CERT_FILE, key_file: str = DEFAULT_KEY_FILE, overwrite: bool = False
+        cert_file: str,
+        key_file: str,
+        overwrite: bool,
+        common_name: str
 ):
     """Create a self-signed TLS key pair and write to disk."""
+    logger.info(msg=f"create_tls_keypair was called with args: {locals()}")
+
     cert_file_path = Path(cert_file)
     key_file_path = Path(key_file)
 
@@ -84,7 +91,7 @@ def create_tls_keypair(
         cert_file_path.unlink(missing_ok=True)
         key_file_path.unlink(missing_ok=True)
 
-    cert, key = gen_self_signed_cert()
+    cert, key = gen_self_signed_cert(common_name=common_name)
 
     cert_file_path.parent.mkdir(parents=True, exist_ok=True)
     with cert_file_path.open(mode="wb") as cert_file:
@@ -93,9 +100,9 @@ def create_tls_keypair(
     with key_file_path.open(mode="wb") as key_file:
         key_file.write(key)
 
-    _LOGGER.info("Created TLS Key pair successfully.")
-    _LOGGER.info(f"Cert file path: {cert_file_path}")
-    _LOGGER.info(f"Key file path: {key_file_path}")
+    logger.info("Created TLS Key pair successfully.")
+    logger.info(f"Cert file path: {cert_file_path}")
+    logger.info(f"Key file path: {key_file_path}")
 
 
 @click.command()
@@ -121,9 +128,21 @@ def create_tls_keypair(
     required=True,
     help="Can we overwrite the cert/key if they exist?",
 )
-def click_create_tls_keypair(cert_file: str, key_file: str, overwrite: bool):
+@click.option(
+    "--common-name",
+    type=str,
+    default=socket.gethostname(),
+    show_default=True,
+    required=True,
+    help="Set the common name (CN) for the certificate.",
+)
+def click_create_tls_keypair(cert_file: str,
+                             key_file: str,
+                             overwrite: bool,
+                             common_name: str
+                             ):
     """Provide a click interface to create a self-signed TLS key pair."""
-    create_tls_keypair(cert_file, key_file, overwrite)
+    create_tls_keypair(**locals())
 
 
 if __name__ == "__main__":

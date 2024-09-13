@@ -60,6 +60,7 @@ Homepage = "https://github.com/prmoore77/spark-connect-proxy"
 spark-connect-proxy-server = "spark_connect_proxy.server:click_serve"
 spark-connect-proxy-create-jwt = "spark_connect_proxy.utilities.create_jwt:click_create_jwt"
 spark-connect-proxy-create-tls-keypair = "spark_connect_proxy.utilities.tls_utilities:click_create_tls_keypair"
+spark-connect-proxy-ibis-client-example = "spark_connect_proxy.client_examples.ibis_client_example:click_run_client_example"
 
 [tool.bumpver]
 current_version = "0.0.4"
