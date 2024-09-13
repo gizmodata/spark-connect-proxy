@@ -27,6 +27,12 @@ def run_client_example(host: str,
                        tls_roots: Optional[str] = None,
                        token: Optional[str] = None
                        ):
+    arg_dict = locals()
+    if arg_dict.pop("token"):
+        arg_dict["token"] = "(redacted)"
+
+    logger.info(msg=f"Running Spark Connect Proxy - Ibis client example - args: {arg_dict}")
+
     spark_connect_server_url = f"sc://{host}:{port}/"
     logger.info(msg=f"Using Spark Connect Server URL: {spark_connect_server_url}")
 
@@ -102,14 +108,16 @@ def run_client_example(host: str,
 @click.option(
     "--tls-roots",
     type=str,
-    default=None,
+    default=os.getenv("TLS_ROOTS", None),
+    show_default=True,
     required=False,
     help="The path to the root certificates for the TLS/SSL connection.",
 )
 @click.option(
     "--token",
     type=str,
-    default=None,
+    default=os.getenv("JWT_TOKEN", None),
+    show_default=False,
     required=False,
     help="The JWT token to use for authentication - if required.",
 )
