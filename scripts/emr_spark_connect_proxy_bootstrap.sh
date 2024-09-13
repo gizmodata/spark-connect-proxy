@@ -44,7 +44,9 @@ spark-connect-proxy-create-tls-keypair \
 # Create a random secret key
 SECRET_KEY=$(openssl rand -base64 32)
 
-# Start the Spark Connect Proxy server
+# Start the Spark Connect Proxy server - listen on port: 50051
+# It is safe to expose this port to the internet
+# because it uses TLS and JWT authentication.
 spark-connect-proxy \
    --spark-connect-server-url "localhost:15002" \
    --port 50051 \
