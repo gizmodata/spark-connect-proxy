@@ -10,8 +10,12 @@ import grpc
 import pyspark.sql.connect.proto.base_pb2_grpc as pb2_grpc
 from grpc_channelz.v1 import channelz
 
+from . import __version__ as spark_connect_proxy_version
 from .config import SPARK_CONNECT_SERVER_DEFAULT_URL, SERVER_PORT, DEFAULT_JWT_AUDIENCE
 from .security import BearerTokenAuthInterceptor
+
+# Misc. Constants
+SPARK_CONNECT_PROXY_VERSION = spark_connect_proxy_version
 
 # Setup logging
 logging.basicConfig(format='%(asctime)s - %(levelname)-8s %(message)s',
@@ -37,6 +41,7 @@ class LoggingInterceptor(grpc.ServerInterceptor):
 
 class SparkConnectProxyServicer(pb2_grpc.SparkConnectServiceServicer):
     """A gRPC servicer that proxies requests to the Spark Connect server."""
+
     def __init__(self, stub):
         self.stub = stub
 
@@ -75,12 +80,13 @@ def serve(
         secret_key: Optional[str] = None,
         log_level: str = "INFO",
 ) -> grpc.Server:
-    """Start the Spark Substrait Gateway server."""
+    """Start the Spark Connect Proxy server."""
     arg_dict = locals()
     if arg_dict.pop("secret_key"):
         arg_dict["secret_key"] = "(redacted)"
 
-    logger.info(msg=f"Initializing SparkConnect Proxy server - args: {arg_dict}")
+    logger.info(
+        msg=f"Initializing SparkConnect Proxy server - version: {SPARK_CONNECT_PROXY_VERSION} - args: {arg_dict}")
     logger.info(msg=f"Proxying Spark Connect server at: {spark_connect_server_url}")
 
     # Set up the Spark Connect gRPC client (without TLS)
@@ -132,7 +138,8 @@ def serve(
 
     channelz.add_channelz_servicer(server)
 
-    logger.info(f"Starting SparkConnect Proxy server - listening on port: {port}")
+    logger.info(
+        f"Starting SparkConnect Proxy server - version: {SPARK_CONNECT_PROXY_VERSION} - listening on port: {port}")
     server.start()
     if wait:
         server.wait_for_termination()
@@ -140,6 +147,14 @@ def serve(
 
 
 @click.command()
+@click.option(
+    "--version/--no-version",
+    type=bool,
+    default=False,
+    show_default=False,
+    required=True,
+    help="Prints the Spark Connect Proxy version and exits."
+)
 @click.option(
     "--spark-connect-server-url",
     type=str,
@@ -203,6 +218,7 @@ def serve(
     help="The logging level to use for the server.",
 )
 def click_serve(
+        version: bool,
         spark_connect_server_url: str,
         port: int,
         wait: bool,
@@ -211,9 +227,13 @@ def click_serve(
         jwt_audience: str,
         secret_key: str,
         log_level: str,
-) -> grpc.Server:
-    """Provide a click interface for starting the Spark Substrait Gateway server."""
-    return serve(**locals())
+):
+    """Provide a click interface for starting the Spark Connect Proxy server."""
+    if version:
+        print(f"Spark Connect Proxy - version: {SPARK_CONNECT_PROXY_VERSION}")
+        return
+
+    serve(**locals())
 
 
 if __name__ == "__main__":

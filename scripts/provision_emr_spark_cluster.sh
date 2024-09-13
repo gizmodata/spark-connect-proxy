@@ -34,6 +34,7 @@ INSTANCE_COUNT=${2:-3}
 EMR_VERSION=${3:-"emr-7.2.0"}
 TAGS=${4:-'creation_method=script_philip_voltrondata_com environment=development team=field-eng owner=philip_voltrondata_com service=emr-benchmarking no_delete=true'}
 RUN_BOOTSTRAP_ACTIONS=${5:-"FALSE"}
+SPARK_CONNECT_PROXY_PORT=${6:-"50051"}
 
 echo "Using instance type: ${INSTANCE_TYPE}"
 echo "Using instance count: ${INSTANCE_COUNT}"
@@ -109,13 +110,12 @@ aws ec2 authorize-security-group-ingress \
 --group-id ${EMR_SECURITY_GROUP} \
 --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]' || echo "SSH Ingress already setup"
 
-# Allow secured Spark Connect traffic from this IP address
-MY_IP_ADDRESS=$(curl -s https://checkip.amazonaws.com)
+# Allow secured Spark Connect Proxy traffic
 echo "My IP Address is: ${MY_IP_ADDRESS}"
 aws ec2 authorize-security-group-ingress \
 --output text \
 --group-id ${EMR_SECURITY_GROUP} \
---ip-permissions "[{\"IpProtocol\": \"tcp\", \"FromPort\": 443, \"ToPort\": 443, \"IpRanges\": [{\"CidrIp\": \"${MY_IP_ADDRESS}/32\", \"Description\": \"Spark Connect\"}]}]" || echo \"Spark Connect Ingress already setup\"
+--ip-permissions "[{\"IpProtocol\": \"tcp\", \"FromPort\": ${SPARK_CONNECT_PROXY_PORT}, \"ToPort\": ${SPARK_CONNECT_PROXY_PORT}, \"IpRanges\": [{\"CidrIp\": \"0.0.0.0/0\", \"Description\": \"Spark Connect\"}]}]" || echo \"Spark Connect Ingress already setup\"
 
 # Loop until the cluster is ready and completed all bootstrap actions
 while true; do

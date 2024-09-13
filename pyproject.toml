@@ -33,7 +33,8 @@ dependencies = [
     "grpcio-status==1.66.*",
     "pyjwt==2.9.*",
     "python-dotenv==1.0.*",
-    "pyarrow_hotfix==0.6.*"
+    "pyarrow_hotfix==0.6.*",
+    "protobuf==5.27.2",
 ]
 requires-python = ">=3.8"
 
@@ -56,7 +57,7 @@ client = [
 Homepage = "https://github.com/prmoore77/spark-connect-proxy"
 
 [project.scripts]
-spark-connect-proxy-serve = "spark_connect_proxy.server:click_serve"
+spark-connect-proxy-server = "spark_connect_proxy.server:click_serve"
 spark-connect-proxy-create-jwt = "spark_connect_proxy.utilities.create_jwt:click_create_jwt"
 spark-connect-proxy-create-tls-keypair = "spark_connect_proxy.utilities.tls_utilities:click_create_tls_keypair"
 
