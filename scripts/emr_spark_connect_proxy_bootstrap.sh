@@ -59,7 +59,7 @@ spark-connect-proxy-server \
    --port 50051 \
    --tls tls/server.crt tls/server.key \
    --enable-auth \
-   --jwt-audience "spark-connect-proxy" \
+   --jwt-audience "spark-client" \
    --secret-key "${SECRET_KEY}" \
    --log-level INFO
 
