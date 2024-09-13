@@ -35,8 +35,9 @@ dependencies = [
     "python-dotenv==1.0.*",
     "pyarrow_hotfix==0.6.*",
     "protobuf==5.27.2",
+    "pyOpenSSL==24.2.1"
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 dev = [
@@ -49,8 +50,7 @@ client = [
     "ibis-framework==9.5.*",
     "codetiming==1.4.*",
     "pandas==2.2.*",
-    "pyarrow==17.0.*",
-    "pyOpenSSL==24.2.1"
+    "pyarrow==17.0.*"
 ]
 
 [project.urls]

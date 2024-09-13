@@ -71,6 +71,7 @@ class SparkConnectProxyServicer(pb2_grpc.SparkConnectServiceServicer):
 
 
 def serve(
+        version: bool,
         spark_connect_server_url: str,
         port: int,
         wait: bool,
@@ -79,7 +80,12 @@ def serve(
         jwt_audience: Optional[str] = None,
         secret_key: Optional[str] = None,
         log_level: str = "INFO",
-) -> grpc.Server:
+):
+    """Provide a click interface for starting the Spark Connect Proxy server."""
+    if version:
+        print(f"Spark Connect Proxy - version: {SPARK_CONNECT_PROXY_VERSION}")
+        return
+
     """Start the Spark Connect Proxy server."""
     arg_dict = locals()
     if arg_dict.pop("secret_key"):
@@ -228,12 +234,7 @@ def click_serve(
         secret_key: str,
         log_level: str,
 ):
-    """Provide a click interface for starting the Spark Connect Proxy server."""
-    if version:
-        print(f"Spark Connect Proxy - version: {SPARK_CONNECT_PROXY_VERSION}")
-        return
-
-    serve(**locals())
+    return serve(**locals())
 
 
 if __name__ == "__main__":

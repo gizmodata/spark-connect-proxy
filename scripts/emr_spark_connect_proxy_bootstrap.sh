@@ -32,8 +32,11 @@ export SPARK_HOME=/usr/lib/spark
 $SPARK_HOME/sbin/start-connect-server.sh --packages org.apache.spark:spark-connect_${SCALA_VERSION}:${SPARK_VERSION}
 
 # Install the Spark Connect Proxy server Python package
-pip3 install --upgrade pip setuptools
-pip3 install spark-connect-proxy
+pip install --upgrade pip setuptools
+pip install spark-connect-proxy[client]
+
+# Set up the path
+export PATH=${PATH}:/home/hadoop/.local/bin
 
 # Create a TLS key pair
 mkdir tls
@@ -47,7 +50,7 @@ SECRET_KEY=$(openssl rand -base64 32)
 # Start the Spark Connect Proxy server - listen on port: 50051
 # It is safe to expose this port to the internet
 # because it uses TLS and JWT authentication.
-spark-connect-proxy \
+spark-connect-proxy-server \
    --spark-connect-server-url "localhost:15002" \
    --port 50051 \
    --tls tls/server.crt tls/server.key \
