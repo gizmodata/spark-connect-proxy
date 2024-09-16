@@ -57,7 +57,9 @@ This repo contains scripts to let you provision an AWS EMR Spark cluster with a 
 First - you'll need to open up a port for public access to the AWS EMR Spark Cluster - in addition to the `ssh` port: `22`.  Add port: `50051` as shown here:   
 ![Open port 50051](images/emr-public-access.png?raw=true "Open port 50051")   
 
-*Note* - even though you are opening this port to the public, the Spark Connect Proxy will secure it with TLS and JWT Authentication.
+
+> [!NOTE]   
+> Even though you are opening this port to the public, the Spark Connect Proxy will secure it with TLS and JWT Authentication.
 
 The scripts use the AWS CLI to provision the EMR Spark cluster - so you will need to have the [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configured with your AWS credentials.
 
@@ -75,9 +77,10 @@ scripts/provision_emr_spark_cluster.sh
 ```
 
 That will output several files (which will be git ignored for security reasons):
-- file: `tls/ca.crt` - the EMR Spark cluster generated TLS certificate - needed for your PySpark client to trust the Spark Connect Proxy server (b/c it is self-signed)
-- file: `scripts/output/instance_details.txt` - shows the ssh command for connecting to the master node of the EMR Spark cluster
-- file: `scripts/output/spark_connect_proxy_details.log` - shows how to run a PySpark Ibis client example - which connects securely from your local computer to the remote EMR Spark cluster.  Example command:
+- `tls/ca.crt` - the EMR Spark cluster generated TLS certificate - needed for your PySpark client to trust the Spark Connect Proxy server (b/c it is self-signed)
+- `scripts/output/instance_details.txt` - shows the ssh command for connecting to the master node of the EMR Spark cluster
+- `scripts/output/spark_connect_proxy_details.log` - shows how to run a PySpark Ibis client example - which connects securely from your local computer to the remote EMR Spark cluster.  Example command:
+
 ```shell
 spark-connect-proxy-ibis-client-example \
   --host ec2-01-01-01-01.us-east-2.compute.amazonaws.com \
