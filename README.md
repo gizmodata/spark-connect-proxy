@@ -20,7 +20,7 @@ python3 -m venv .venv
 # Activate the virtual environment
 . .venv/bin/activate
 
-pip install spark-connect-proxy
+pip install spark-connect-proxy[client]
 ```
 
 ### Option 2 - from source - for development
