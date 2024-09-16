@@ -9,7 +9,7 @@ A reverse proxy server which allows secure connectivity to a Spark Connect serve
 
 # Setup (to run locally)
 
-## Install package
+## Install Python package
 You can install `spark-connect-proxy` from PyPi or from source.
 
 ### Option 1 - from PyPi
@@ -49,7 +49,35 @@ export PYTHONPATH=$(pwd)/src
 ```
 
 ### Usage
-TODO
+This repo contains scripts to let you provision an AWS EMR Spark cluster with a secure Spark Connect Proxy server to allow you to securely and remotely connect to it.
+
+The scripts the AWS CLI to provision the EMR Spark cluster - so you will need to have the [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configured with your AWS credentials.
+
+You can create a file in your local copy of the `scripts` directory called `.env` with the following contents:
+```shell
+export AWS_ACCESS_KEY_ID="put value from AWS here"
+export AWS_SECRET_ACCESS_KEY="put value from AWS here"
+export AWS_SESSION_TOKEN="put value from AWS here"
+export AWS_REGION="us-east-2"
+```
+
+To provision the EMR Spark cluster - run the following command from the root directory of this repo:
+```shell
+scripts/provision_emr_spark_cluster.sh
+```
+
+That will output several files:
+- file: `tls/ca.crt` - the EMR Spark cluster generated TLS certificate - needed for your PySpark client to trust the Spark Connect Proxy server (b/c it is self-signed)
+- file: `scripts/output/instance_details.txt` - shows the ssh command for connecting to the master node of the EMR Spark cluster
+- file: `scripts/output/spark_connect_proxy_details.log` - shows how to run a PySpark Ibis client example - which connects securely from your local computer to the remote EMR Spark cluster.  Example command:
+```shell
+spark-connect-proxy-ibis-client-example \
+  --host ec2-01-01-01-01.us-east-2.compute.amazonaws.com \
+  --port 50051 \
+  --use-tls \
+  --tls-roots tls/ca.crt \
+  --token honey.badger.dontcare
+```
 
 ### Handy development commands
 

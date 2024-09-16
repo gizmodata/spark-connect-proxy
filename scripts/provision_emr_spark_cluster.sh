@@ -25,20 +25,29 @@
 set -e
 
 SCRIPT_DIR=$(dirname ${0})
+SCRIPT_OUTPUT_DIR="${SCRIPT_DIR}/output"
+
 # Source the .env file for the AWS env vars needed for authentication
 source ${SCRIPT_DIR}/.env
 
 # Process args
 INSTANCE_TYPE=${1:-"r5.8xlarge"}  # r5.8xlarge has 32 vCPUs and 256 GiB of memory
 INSTANCE_COUNT=${2:-3}
-EMR_VERSION=${3:-"emr-7.2.0"}
-TAGS=${4:-'creation_method=script_philip_voltrondata_com environment=development team=field-eng owner=philip_voltrondata_com service=emr-benchmarking no_delete=true'}
-RUN_BOOTSTRAP_ACTIONS=${5:-"FALSE"}
-SPARK_CONNECT_PROXY_PORT=${6:-"50051"}
+START_SPARK_CONNECT_PROXY=${3:-"TRUE"}
+EMR_VERSION=${4:-"emr-7.2.0"}
+TAGS=${5:-'creation_method=script_philip_voltrondata_com environment=development team=field-eng owner=philip_voltrondata_com service=emr-benchmarking no_delete=true'}
+RUN_BOOTSTRAP_ACTIONS=${6:-"FALSE"}
+SPARK_CONNECT_PROXY_PORT=${7:-"50051"}
 
-echo "Using instance type: ${INSTANCE_TYPE}"
-echo "Using instance count: ${INSTANCE_COUNT}"
-echo "Using EMR Version: ${EMR_VERSION}"
+# Echo out script parameters
+echo "Script: ${0} was called with the following arguments:"
+echo "1) INSTANCE_TYPE: ${INSTANCE_TYPE}"
+echo "2) INSTANCE_COUNT: ${INSTANCE_COUNT}"
+echo "3) START_SPARK_CONNECT_PROXY: ${START_SPARK_CONNECT_PROXY}"
+echo "4) EMR_VERSION: ${EMR_VERSION}"
+echo "5) TAGS: ${TAGS}"
+echo "6) RUN_BOOTSTRAP_ACTIONS: ${RUN_BOOTSTRAP_ACTIONS}"
+echo "7) SPARK_CONNECT_PROXY_PORT: ${SPARK_CONNECT_PROXY_PORT}"
 
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 echo "Using AWS Account ID: ${AWS_ACCOUNT_ID}"
@@ -111,7 +120,6 @@ aws ec2 authorize-security-group-ingress \
 --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]' || echo "SSH Ingress already setup"
 
 # Allow secured Spark Connect Proxy traffic
-echo "My IP Address is: ${MY_IP_ADDRESS}"
 aws ec2 authorize-security-group-ingress \
 --output text \
 --group-id ${EMR_SECURITY_GROUP} \
@@ -139,8 +147,18 @@ while true; do
     sleep 30
 done
 
+# Start the Spark Connect Proxy server if desired
+if [ "${START_SPARK_CONNECT_PROXY}" == "TRUE" ]; then
+  echo "Starting the Spark Connect Proxy server..."
+  SPARK_CONNECT_PROXY_OUTPUT_FILE="${SCRIPT_OUTPUT_DIR}/spark_connect_proxy_details.log"
+  ${SCRIPT_DIR}/emr_start_spark_connect_proxy.sh ${MASTER_DNS} ${SSH_KEY} ${SPARK_CONNECT_PROXY_PORT} | tee ${SPARK_CONNECT_PROXY_OUTPUT_FILE}
+  echo -e "Details of the Spark Connect Proxy server are in the file: ${SPARK_CONNECT_PROXY_OUTPUT_FILE}"
+fi
+
 echo "Cluster is ready!"
 
-echo -e "Use this SSH command to connect to the EMR cluster: \nssh -i ${SSH_KEY} hadoop@${MASTER_DNS}" | tee instance_details.txt
+INSTANCE_DETAILS_OUTPUT_FILE="${SCRIPT_OUTPUT_DIR}/instance_details.txt"
+echo -e "Use this SSH command to connect to the EMR cluster: \nssh -i ${SSH_KEY} hadoop@${MASTER_DNS}" | tee ${INSTANCE_DETAILS_OUTPUT_FILE}
+echo -e "Details of the EMR cluster are in the file: ${INSTANCE_DETAILS_OUTPUT_FILE}"
 
 exit 0

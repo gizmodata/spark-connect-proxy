@@ -72,18 +72,17 @@ def serve(
         secret_key: Optional[str] = None,
         log_level: str = "INFO",
 ):
-    """Provide a click interface for starting the Spark Connect Proxy server."""
+    """Start the Spark Connect Proxy server."""
     if version:
         print(f"Spark Connect Proxy - version: {SPARK_CONNECT_PROXY_VERSION}")
         return
 
-    """Start the Spark Connect Proxy server."""
     arg_dict = locals()
     if arg_dict.pop("secret_key"):
         arg_dict["secret_key"] = "(redacted)"
 
     logger.info(
-        msg=f"Initializing SparkConnect Proxy server - version: {SPARK_CONNECT_PROXY_VERSION} - args: {arg_dict}")
+        msg=f"Initializing Spark Connect Proxy server - version: {SPARK_CONNECT_PROXY_VERSION} - args: {arg_dict}")
     logger.info(msg=f"Proxying Spark Connect server at: {spark_connect_server_url}")
 
     # Set up the Spark Connect gRPC client (without TLS)
