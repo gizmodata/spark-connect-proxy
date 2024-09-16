@@ -87,8 +87,8 @@ spark-connect-proxy-ibis-client-example \
   --token honey.badger.dontcare
 ```
 
-[!IMPORTANT]  
-You must have installed the `spark-connect-proxy` package with the `[client]` extras onto the client computer to run the `spark-connect-proxy-ibis-client-example` command.
+> [!IMPORTANT]   
+> You must have installed the `spark-connect-proxy` package with the `[client]` extras onto the client computer to run the `spark-connect-proxy-ibis-client-example` command.   
 
 ### Handy development commands
 
