@@ -71,7 +71,7 @@ To provision the EMR Spark cluster - run the following command from the root dir
 scripts/provision_emr_spark_cluster.sh
 ```
 
-That will output several files:
+That will output several files (which will be git ignored for security reasons):
 - file: `tls/ca.crt` - the EMR Spark cluster generated TLS certificate - needed for your PySpark client to trust the Spark Connect Proxy server (b/c it is self-signed)
 - file: `scripts/output/instance_details.txt` - shows the ssh command for connecting to the master node of the EMR Spark cluster
 - file: `scripts/output/spark_connect_proxy_details.log` - shows how to run a PySpark Ibis client example - which connects securely from your local computer to the remote EMR Spark cluster.  Example command:
