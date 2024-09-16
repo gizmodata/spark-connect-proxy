@@ -51,6 +51,11 @@ export PYTHONPATH=$(pwd)/src
 ### Usage
 This repo contains scripts to let you provision an AWS EMR Spark cluster with a secure Spark Connect Proxy server to allow you to securely and remotely connect to it.
 
+First - you'll need to open up a port for public access to the AWS EMR Spark Cluster - in addition to the `ssh` port: `22`.  Add port: `50051` as shown here:   
+![Open port 50051](images/emr-public-access.png?raw=true "Open port 50051")   
+
+*Note* - even though you are opening this port to the public, the Spark Connect Proxy will secure it with TLS and JWT Authentication.
+
 The scripts the AWS CLI to provision the EMR Spark cluster - so you will need to have the [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configured with your AWS credentials.
 
 You can create a file in your local copy of the `scripts` directory called `.env` with the following contents:
