@@ -1,11 +1,14 @@
 # spark-connect-proxy
-A reverse proxy server which allows secure connectivity to a Spark Connect server
+A reverse proxy server which allows secure connectivity to a Spark Connect server.
 
 [<img src="https://img.shields.io/badge/GitHub-prmoore77%2Fspark--connect--proxy-blue.svg?logo=Github">](https://github.com/prmoore77/spark-connect-proxy)
 [![spark-connect-proxy-ci](https://github.com/prmoore77/spark-connect-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/prmoore77/spark-connect-proxy/actions/workflows/ci.yml)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/spark-connect-proxy)](https://pypi.org/project/spark-connect-proxy/)
 [![PyPI version](https://badge.fury.io/py/spark-connect-proxy.svg)](https://badge.fury.io/py/spark-connect-proxy)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/spark-connect-proxy.svg)](https://pypi.org/project/spark-connect-proxy/)
+
+# Why?
+Because [Spark Connect does NOT provide authentication and/or TLS encryption out of the box](https://spark.apache.org/docs/latest/spark-connect-overview.html#client-application-authentication).  This project provides a reverse proxy server which can be used to secure the connection to a Spark Connect server.
 
 # Setup (to run locally)
 
