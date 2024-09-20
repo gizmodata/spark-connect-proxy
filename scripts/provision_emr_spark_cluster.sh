@@ -56,6 +56,7 @@ AVAILABILITY_ZONE="${AWS_DEFAULT_REGION}a"
 echo "Using Availability Zone: ${AVAILABILITY_ZONE}"
 
 KEY_DIR="${SCRIPT_DIR}/.ssh"
+mkdir -p ${KEY_DIR}
 
 SSH_KEY="${KEY_DIR}/keypair.pem"
 
