@@ -71,7 +71,57 @@ nohup spark-connect-proxy-server \
        --secret-key "${SECRET_KEY}" \
        --log-level INFO > ${SPARK_LOG_DIR}/spark-connect-proxy.log 2>&1 &
 
-echo -e "Example client usage (from your local machine):\n"
-echo -e "spark-connect-proxy-ibis-client-example --host ${EMR_MASTER_DNS} --port ${SPARK_CONNECT_PROXY_PORT} --use-tls --tls-roots tls/ca.crt --token ${JWT_TOKEN}"
+cat << EOF
+# Example Ibis client usage (run in bash):
+spark-connect-proxy-ibis-client-example --host ${EMR_MASTER_DNS} --port ${SPARK_CONNECT_PROXY_PORT} --use-tls --tls-roots tls/ca.crt --token ${JWT_TOKEN}
+
+EOF
+
+cat << EOF
+# Example Python Spark Connect client usage (run in python):
+import os
+import ibis
+from pyspark.sql import SparkSession
+from ibis import _
+
+
+# Set the GRPC environment variable to use the CA cert
+os.environ["GRPC_DEFAULT_SSL_ROOTS_FILE_PATH"] = "tls/ca.crt"
+
+# Get our spark remote session
+spark = (SparkSession
+         .builder
+         .appName("Spark Connect Proxy Example")
+         .remote(url="sc://${EMR_MASTER_DNS}:${SPARK_CONNECT_PROXY_PORT}/;use_ssl=true;token=${JWT_TOKEN}")
+         .getOrCreate()
+         )
+
+# Read a parquet file from S3
+df = spark.read.parquet("s3://gbif-open-data-us-east-1/occurrence/2023-04-01/occurrence.parquet/000000")
+df.show(n=10)
+
+# Connect the Ibis PySpark back-end to the Spark Session (optional)
+con = ibis.pyspark.connect(spark)
+
+# Read the parquet data into an ibis table
+t = con.read_parquet(path="s3://gbif-open-data-us-east-1/occurrence/2023-04-01/occurrence.parquet/000000",
+                     table_name="t"
+                     )
+
+f = (
+    t.select([_.gbifid,
+             _.family,
+             _.species
+    ])
+    .filter(_.family.isin(["Corvidae"]))
+    # Here we limit by 10,000 to fetch a quick batch of results
+    .limit(10000)
+    .group_by(_.species)
+    .count()
+    )
+
+f.execute()
+
+EOF
 
 exit 0
