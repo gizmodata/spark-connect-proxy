@@ -35,7 +35,7 @@ INSTANCE_TYPE=${1:-"r5.8xlarge"}  # r5.8xlarge has 32 vCPUs and 256 GiB of memor
 INSTANCE_COUNT=${2:-3}
 START_SPARK_CONNECT_PROXY=${3:-"TRUE"}
 EMR_VERSION=${4:-"emr-7.2.0"}
-TAGS=${5:-'creation_method=script_philip_voltrondata_com environment=development team=field-eng owner=philip_voltrondata_com service=emr-benchmarking no_delete=true'}
+TAGS=${5:-"creation_method=script_${USER}_voltrondata_com environment=development team=field-eng owner=${USER}_voltrondata_com service=emr-benchmarking no_delete=true"}
 RUN_BOOTSTRAP_ACTIONS=${6:-"FALSE"}
 SPARK_CONNECT_PROXY_PORT=${7:-"50051"}
 
