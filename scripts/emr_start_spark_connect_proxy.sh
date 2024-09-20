@@ -37,6 +37,7 @@ scp -i ${IDENTITY_FILE} ${SCRIPT_DIR}/${REMOTE_SCRIPT} hadoop@${EMR_MASTER_DNS}:
 ssh -i ${IDENTITY_FILE} hadoop@${EMR_MASTER_DNS} "bash /home/hadoop/${REMOTE_SCRIPT} ${EMR_MASTER_DNS} ${SPARK_CONNECT_PROXY_PORT}"
 
 # Copy the server.crt file to the local machine so it can be used with the --tls-roots arg for the client
+mkdir -p ${TLS_DIR}
 scp -i ${IDENTITY_FILE} hadoop@${EMR_MASTER_DNS}:/home/hadoop/tls/server.crt ${TLS_DIR}/ca.crt
 
 exit 0
