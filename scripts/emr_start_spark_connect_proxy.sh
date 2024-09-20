@@ -27,6 +27,7 @@ echo "1) EMR_MASTER_DNS: ${EMR_MASTER_DNS}"
 echo "2) IDENTITY_FILE: ${IDENTITY_FILE}"
 echo "3) SPARK_CONNECT_PROXY_PORT: ${SPARK_CONNECT_PROXY_PORT}"
 
+mkdir -p ~/.ssh
 ssh-keyscan -H ${EMR_MASTER_DNS} >> ~/.ssh/known_hosts
 
 REMOTE_SCRIPT="emr_start_spark_connect_proxy_remote.sh"
