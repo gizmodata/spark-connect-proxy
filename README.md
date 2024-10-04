@@ -1,8 +1,8 @@
 # spark-connect-proxy
 A reverse proxy server which allows secure connectivity to a Spark Connect server.
 
-[<img src="https://img.shields.io/badge/GitHub-prmoore77%2Fspark--connect--proxy-blue.svg?logo=Github">](https://github.com/prmoore77/spark-connect-proxy)
-[![spark-connect-proxy-ci](https://github.com/prmoore77/spark-connect-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/prmoore77/spark-connect-proxy/actions/workflows/ci.yml)
+[<img src="https://img.shields.io/badge/GitHub-gizmodata%2Fspark--connect--proxy-blue.svg?logo=Github">](https://github.com/gizmodata/spark-connect-proxy)
+[![spark-connect-proxy-ci](https://github.com/gizmodata/spark-connect-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/gizmodata/spark-connect-proxy/actions/workflows/ci.yml)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/spark-connect-proxy)](https://pypi.org/project/spark-connect-proxy/)
 [![PyPI version](https://badge.fury.io/py/spark-connect-proxy.svg)](https://badge.fury.io/py/spark-connect-proxy)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/spark-connect-proxy.svg)](https://pypi.org/project/spark-connect-proxy/)
@@ -28,7 +28,7 @@ pip install spark-connect-proxy[client]
 
 ### Option 2 - from source - for development
 ```shell
-git clone https://github.com/prmoore77/spark-connect-proxy
+git clone https://github.com/gizmodata/spark-connect-proxy
 
 cd spark-connect-proxy
 
