@@ -7,7 +7,7 @@
 #
 # Usage:       ./emr_start_spark_connect_proxy_remote.sh <<EMR_MASTER_DNS>>
 #
-# Author:      Voltron Data
+# Author:      Gizmo Data LLC
 # Date:        September 13, 2024 Anno Domini
 #
 # Version:     1.0

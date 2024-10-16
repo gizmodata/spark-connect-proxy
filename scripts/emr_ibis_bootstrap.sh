@@ -11,7 +11,7 @@
 #
 # Usage:       ./emr_ibis_bootstrap.sh
 #
-# Author:      Voltron Data
+# Author:      Gizmo Data LLC
 # Date:        March 15, 2023
 #
 # Version:     1.0
