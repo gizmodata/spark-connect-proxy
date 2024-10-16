@@ -54,7 +54,7 @@ client = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/prmoore77/spark-connect-proxy"
+Homepage = "https://github.com/gizmodata/spark-connect-proxy"
 
 [project.scripts]
 spark-connect-proxy-server = "spark_connect_proxy.server:click_serve"
