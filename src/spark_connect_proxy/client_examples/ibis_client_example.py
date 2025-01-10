@@ -4,6 +4,7 @@ from typing import Optional
 import click
 import ibis
 import pandas as pd
+import setuptools  # Needed to avoid: "distutils" import error in PySpark in Python 3.12
 from codetiming import Timer
 from ibis import _
 from pyspark.sql import SparkSession
