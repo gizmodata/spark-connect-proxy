@@ -81,6 +81,7 @@ cat << EOF
 # Example Python Spark Connect client usage (run in python):
 import os
 import ibis
+import setuptools  # Needed to avoid: "distutils" import error in PySpark in Python 3.12
 from pyspark.sql import SparkSession
 from ibis import _
 
@@ -120,7 +121,8 @@ f = (
     .count()
     )
 
-f.execute()
+result = f.execute()
+print(result)
 
 EOF
 

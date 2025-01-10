@@ -14,7 +14,7 @@ include = ["*"]  # package names should match these glob patterns (["*"] by defa
 
 [project]
 name = "spark-connect-proxy"
-version = "0.0.10"
+version = "0.0.11"
 description = "A reverse proxy server which allows secure connectivity to a Spark Connect server"
 readme = "README.md"
 authors = [{ name = "Philip Moore", email = "prmoore77@hotmail.com" }]
@@ -63,7 +63,7 @@ spark-connect-proxy-create-tls-keypair = "spark_connect_proxy.utilities.tls_util
 spark-connect-proxy-ibis-client-example = "spark_connect_proxy.client_examples.ibis_client_example:click_run_client_example"
 
 [tool.bumpver]
-current_version = "0.0.10"
+current_version = "0.0.11"
 version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
